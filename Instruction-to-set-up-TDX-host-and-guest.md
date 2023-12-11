@@ -11,30 +11,38 @@ For the version information of various components like Linux kernel, QEMU, OVMF,
 ## Distro information
 Most information are distro-agnostic and when some distro specific command is used like apt, you will need to change it accordingly. These build instructions are tested on Ubuntu 23.04 and Fedora 39.
 
-## Build a TDX host
+## Kernel configuration for TDX support
 Please apply the tarball from this repo on top of the related kernel version (see the NEWS file for kernel version).
 
-As for kernel configs: make sure your base config is usable on your test machine. And set the following configs to Y
-```
-CONFIG_X86_INTEL_TSX_MODE_ON=y
-CONFIG_X86_X2APIC=y
-CONFIG_IRQ_REMAP=y
-CONFIG_EXPERT=y
-CONFIG_KVM_SW_PROTECTED_VM=y
-CONFIG_TDX_HOST=y
-CONFIG_TDX_GUEST=y
-CONFIG_VIRTIO_BLK=y
-CONFIG_VIRTIO_NET=y
-CONFIG_ZRAM=y
-```
+Ensure that your base kernel config is operative on your test machine.
 
-Set the following configs to N
-```
-CONFIG_EISA=n
-CONFIG_KSM=n
-CONFIG_HYPERV=n
-```
+Set the following options in **_menuconfig_** to enable TDX.
 
+```
++- General setup
+|  +- Configure standard kernel features (expert users) [Y]
++- Virtualization
+|  +- Kernel-based Virtual Machine (KVM) support [Y]
+|  +- Enable support for KVM software-protected VMs [Y]
+|  +- KVM for Intel (and compatible) processors support [Y]
+|  +- Software Guard eXtensions (SGX) Virtualization [Y]
++- Processor type and features
+|  +- Support x2apic [Y]
+|  +- Linux guest support
+|     +- Intel TDX (Trust Domain Extensions) - Guest Support [Y]
+|  +- Software Guard eXtensions (SGX) [Y]
+|  +- Intel Trust Domain Extensions (TDX) host support [Y]
++- Device Drivers
+|  +- Block devices
+|     +- Virtio block driver [Y]
+|  +- Network device support
+|     +- Virtio network driver [Y]
+|  +- Virtualization drivers
+|     +- TDX Guest driver [M]
+|  +- Microsoft Hyper-V guest support [N]
+|  +- IOMMU Hardware Support
+|     +- Support for Interrupt Remapping [Y]
+```
 ## Host kernel cmdline
 Make sure the following two options are in host kernel cmdline: "kvm_intel.tdx=on nohibernate".
 
