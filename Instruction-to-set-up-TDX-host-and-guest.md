@@ -35,6 +35,9 @@ CONFIG_KSM=n
 CONFIG_HYPERV=n
 ```
 
+## Host kernel cmdline
+Make sure the following two options are in host kernel cmdline: "kvm_intel.tdx=on nohibernate".
+
 ## Setup TDX host in BIOS
 Note: The following is a sample setting, different vendors may have different settings.
 Go to Socket Configuration > Processor Configuration > TME, TME-MT, TDX.
